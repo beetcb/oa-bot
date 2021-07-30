@@ -11,5 +11,5 @@ godotenv -f .env oa-bot path_to_pdf_dir
 # Build
 
 ```bash
-godotenv -f .env goreleaser release
+godotenv -f .env goreleaser release --snapshot
 ```
