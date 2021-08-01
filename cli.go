@@ -11,9 +11,12 @@ import (
 )
 
 func main() {
+	LoadRemoteEnv()
+
 	if len(os.Args) <= 1 {
 		panic("Usage: oa-bot {dirPath}")
 	}
+
 	dir := filepath.ToSlash(os.Args[1])
 	files, err := ioutil.ReadDir(dir)
 

@@ -26,9 +26,9 @@ type UploadBody struct {
 
 func UploadToMingDao(tempUrl string, parse extract.ParseInfo) bool {
 	uploadBody := UploadBody{
-		AppKey:      os.Getenv(`APPKEY`),
+		AppKey:      os.Getenv(`APP_KEY`),
 		Sign:        os.Getenv(`SIGN`),
-		WorksheetId: os.Getenv(`WORKSHEETID`),
+		WorksheetId: os.Getenv(`WORKSHEET_ID`),
 		Controls: []Controls{
 			{ControlId: "file", Value: tempUrl},
 			{

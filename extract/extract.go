@@ -8,14 +8,13 @@ import (
 	"github.com/unidoc/unipdf/v3/model"
 )
 
-func init() {
+func ExtractPdfText(inputPath string) string {
+
 	err := license.SetMeteredKey(os.Getenv(`UNIDOC_LICENSE_API_KEY`))
 	if err != nil {
 		panic(err)
 	}
-}
 
-func ExtractPdfText(inputPath string) string {
 	f, _ := os.Open(inputPath)
 
 	defer f.Close()
