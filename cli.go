@@ -32,6 +32,11 @@ func main() {
 		url := upload.UploadToTemp(inputPath)
 
 		// 上传文档到 MINGDAO
-		upload.UploadToMingDao(url, parse)
+		uploadResult := upload.UploadToMingDao(url, parse)
+
+		// 成功则删除本地文件
+		if uploadResult {
+			os.Remove(inputPath)
+		}
 	}
 }
