@@ -24,7 +24,7 @@ type UploadBody struct {
 	Controls    []Controls `json:"controls"`
 }
 
-func UploadToMingDao(tempUrl string, parse extract.ParseInfo) bool {
+func UploadToMingDao(tempUrl string, parse extract.ParseInfo) string {
 	uploadBody := UploadBody{
 		AppKey:      os.Getenv(`APP_KEY`),
 		Sign:        os.Getenv(`SIGN`),
@@ -49,6 +49,5 @@ func UploadToMingDao(tempUrl string, parse extract.ParseInfo) bool {
 	}
 	defer res.Body.Close()
 	b, _ := ioutil.ReadAll(res.Body)
-	fmt.Println("明道云上传结果：", string(b))
-	return true
+	return fmt.Sprintf("明道云上传结果：%s", string(b))
 }

@@ -1,7 +1,6 @@
 package extract
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/unidoc/unipdf/v3/common/license"
@@ -9,16 +8,16 @@ import (
 	"github.com/unidoc/unipdf/v3/model"
 )
 
-func ExtractPdfText(inputPath string) string {
-
+func FillLicense() {
 	err := license.SetMeteredKey(os.Getenv(`UNIDOC_LICENSE_API_KEY`))
 	if err != nil {
 		panic(err)
 	}
+}
+
+func ExtractPdfText(inputPath string) string {
 
 	f, _ := os.Open(inputPath)
-	fmt.Println(inputPath)
-
 	defer f.Close()
 
 	pdfReader, err := model.NewPdfReader(f)
