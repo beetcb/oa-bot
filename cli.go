@@ -7,7 +7,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"sync"
 
 	"github.com/beetcb/oa-bot/extract"
 	"github.com/beetcb/oa-bot/upload"
@@ -19,8 +18,6 @@ type ActResult struct {
 	parse     extract.ParseInfo
 }
 
-type ActResultArray []ActResult
-
 func init() {
 	if len(os.Args) <= 2 {
 		panic("Usage: oa-bot {dirPath} {envPass}")
@@ -31,30 +28,30 @@ func init() {
 }
 
 func main() {
-	wg := &sync.WaitGroup{}
 	dir := filepath.ToSlash(os.Args[1])
 	files, err := ioutil.ReadDir(dir)
-	acts := ActResultArray{}
-
-	if err != nil {
-		panic(fmt.Sprintf("指定 %s 文件夹错误", dir))
+	l := len(files)
+	if err != nil || l == 0 {
+		panic(fmt.Sprintf("指定 %s 文件夹不存在或为空", dir))
 	}
 
-	for _, file := range files {
-		wg.Add(1)
-		go func(file fs.FileInfo) {
-			defer wg.Done()
+	c := make(chan ActResult)
+
+	for i, file := range files {
+		go func(file fs.FileInfo, i int) {
 			inputPath := filepath.Join(dir, file.Name())
 			text := extract.ExtractPdfText(inputPath)
 			parse := extract.ParsePdfText(inputPath, text)
 			url := upload.UploadToTemp(inputPath)
-			acts = append(acts, ActResult{inputPath, url, parse})
-		}(file)
+			c <- ActResult{inputPath, url, parse}
+			// Close channel
+			if i+1 == l {
+				close(c)
+			}
+		}(file, i)
 	}
 
-	wg.Wait()
-
-	for _, act := range acts {
+	for act := range c {
 		fmt.Println(act)
 		up(act.inputPath, act.url, act.parse)
 	}
