@@ -28,7 +28,7 @@ func main() {
 	}
 
 	for _, file := range files {
-		go act(dir, file)
+		act(dir, file)
 	}
 }
 

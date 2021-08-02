@@ -1,6 +1,7 @@
 package extract
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/unidoc/unipdf/v3/common/license"
@@ -16,25 +17,27 @@ func ExtractPdfText(inputPath string) string {
 	}
 
 	f, _ := os.Open(inputPath)
+	fmt.Println(inputPath)
 
 	defer f.Close()
 
-	pdfReader, _ := model.NewPdfReader(f)
+	pdfReader, err := model.NewPdfReader(f)
+	if err != nil {
+		panic(err)
+	}
+
 	isEncrypted, err := pdfReader.IsEncrypted()
 	if err != nil {
 		panic(err)
 	}
 
-	if err != nil {
-		panic(err)
-	}
 	if isEncrypted {
-		_, err := pdfReader.Decrypt([]byte(``))
+		_, err := pdfReader.Decrypt([]byte(""))
 		if err != nil {
 			panic(err)
 		}
-
 	}
+
 	pdfWriter, _ := pdfReader.ToWriter(nil)
 
 	pdfWriter.WriteToFile(inputPath)
