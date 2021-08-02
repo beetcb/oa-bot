@@ -5,7 +5,7 @@ Download release, Run it with .env file:
 ```bash
 go get github.com/joho/godotenv/cmd/godotenv
 
-godotenv -f .env oa-bot path_to_pdf_dir
+oa-bot path_to_pdf_dir pass_for_renv
 ```
 
 # Build

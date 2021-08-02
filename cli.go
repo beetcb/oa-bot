@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/fs"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -10,13 +11,15 @@ import (
 	"github.com/beetcb/oa-bot/upload"
 )
 
-func main() {
-	LoadRemoteEnv()
-
-	if len(os.Args) <= 1 {
-		panic("Usage: oa-bot {dirPath}")
+func init() {
+	if len(os.Args) <= 2 {
+		panic("Usage: oa-bot {dirPath} {envPass}")
 	}
+	pass := os.Args[2]
+	LoadRemoteEnv(pass)
+}
 
+func main() {
 	dir := filepath.ToSlash(os.Args[1])
 	files, err := ioutil.ReadDir(dir)
 
@@ -25,21 +28,25 @@ func main() {
 	}
 
 	for _, file := range files {
-		inputPath := filepath.Join(dir, file.Name())
-		text := extract.ExtractPdfText(inputPath)
+		go act(dir, file)
+	}
+}
 
-		// 读取文档信息
-		parse := extract.ParsePdfText(inputPath, text)
-		fmt.Println(parse)
+func act(dir string, file fs.FileInfo) {
+	inputPath := filepath.Join(dir, file.Name())
+	text := extract.ExtractPdfText(inputPath)
 
-		url := upload.UploadToTemp(inputPath)
+	// 读取文档信息
+	parse := extract.ParsePdfText(inputPath, text)
+	fmt.Println(parse)
 
-		// 上传文档到 MINGDAO
-		uploadResult := upload.UploadToMingDao(url, parse)
+	url := upload.UploadToTemp(inputPath)
 
-		// 成功则删除本地文件
-		if uploadResult {
-			os.Remove(inputPath)
-		}
+	// 上传文档到 MINGDAO
+	uploadResult := upload.UploadToMingDao(url, parse)
+
+	// 成功则删除本地文件
+	if uploadResult {
+		os.Remove(inputPath)
 	}
 }

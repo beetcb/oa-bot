@@ -1,16 +1,16 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/joho/godotenv"
 )
 
-func LoadRemoteEnv() {
-	res, err := http.Get(os.Getenv("REMOTE_ENV"))
+func LoadRemoteEnv(pass string) {
+	res, err := http.Get(fmt.Sprintf("https://renv.deno.dev/oabot?pass=%s", pass))
 	if err != nil {
 		log.Fatal("无法获取环境变量信息")
 	}
