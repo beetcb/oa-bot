@@ -10,8 +10,8 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func LoadRemoteEnv(pass string) {
-	res, err := http.Get(fmt.Sprintf("https://renv.deno.dev/oabot?pass=%s", pass))
+func LoadRemoteEnv(envName, pass string) {
+	res, err := http.Get(fmt.Sprintf("https://renv.deno.dev/%s?pass=%s", envName, pass))
 	if err != nil {
 		log.Fatal("无法获取环境变量信息")
 	}

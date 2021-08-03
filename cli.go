@@ -19,11 +19,11 @@ type ActResult struct {
 }
 
 func init() {
-	if len(os.Args) <= 2 {
-		panic("Usage: oa-bot {dirPath} {envPass}")
+	if len(os.Args) <= 3 {
+		panic("Usage: oa-bot {dirPath} {envName} {envPass}")
 	}
-	pass := os.Args[2]
-	LoadRemoteEnv(pass)
+	envName, pass := os.Args[2], os.Args[3]
+	LoadRemoteEnv(envName, pass)
 	extract.FillLicense()
 }
 
