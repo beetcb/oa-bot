@@ -44,14 +44,11 @@ func main() {
 			parse := extract.ParsePdfText(inputPath, text)
 			url := upload.UploadToTemp(inputPath)
 			c <- ActResult{inputPath, url, parse}
-			// Close channel
-			if i+1 == l {
-				close(c)
-			}
 		}(file, i)
 	}
 
-	for act := range c {
+	for i := 0; i < l; i++ {
+		act := <-c
 		fmt.Println(act)
 		up(act.inputPath, act.url, act.parse)
 	}
