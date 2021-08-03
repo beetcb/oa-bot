@@ -17,6 +17,7 @@ func ParsePdfText(inputPath, text string) ParseInfo {
 
 	re := regexp.MustCompile(`([a-z0-9]){30,45}`)
 	fileName := re.ReplaceAllString(filepath.Base(inputPath), "")
+	fileName = strings.Replace(fileName, ".pdf", "", 1)
 
 	re = regexp.MustCompile("[\u4e00-\u9fa5]+〔\\d{4}〕\\d+ 号")
 	number := re.FindString(text)
