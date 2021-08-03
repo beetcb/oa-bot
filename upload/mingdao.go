@@ -2,7 +2,6 @@ package upload
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -49,5 +48,5 @@ func UploadToMingDao(tempUrl string, parse extract.ParseInfo) string {
 	}
 	defer res.Body.Close()
 	b, _ := ioutil.ReadAll(res.Body)
-	return fmt.Sprintf("明道云上传结果：%s", string(b))
+	return string(b)
 }

@@ -10,6 +10,7 @@ import (
 
 	"github.com/beetcb/oa-bot/extract"
 	"github.com/beetcb/oa-bot/upload"
+	"github.com/fatih/color"
 )
 
 type ActResult struct {
@@ -37,19 +38,18 @@ func main() {
 
 	c := make(chan ActResult)
 
-	for i, file := range files {
-		go func(file fs.FileInfo, i int) {
+	for _, file := range files {
+		go func(file fs.FileInfo) {
 			inputPath := filepath.Join(dir, file.Name())
 			text := extract.ExtractPdfText(inputPath)
 			parse := extract.ParsePdfText(inputPath, text)
 			url := upload.UploadToTemp(inputPath)
 			c <- ActResult{inputPath, url, parse}
-		}(file, i)
+		}(file)
 	}
 
 	for i := 0; i < l; i++ {
 		act := <-c
-		fmt.Println(act)
 		up(act.inputPath, act.url, act.parse)
 	}
 }
@@ -58,10 +58,14 @@ func main() {
 func up(inputPath string, url string, parse extract.ParseInfo) {
 	// 上传文档到 MINGDAO
 	uploadResult := upload.UploadToMingDao(url, parse)
-	fmt.Println(uploadResult)
-
 	// 成功则删除本地文件
 	if strings.Contains(uploadResult, "true") {
 		os.Remove(inputPath)
 	}
+
+	color.Set(color.FgHiMagenta)
+	fmt.Println("提取信息：", parse)
+	fmt.Println("上传结果：", uploadResult)
+	fmt.Println()
+	color.Unset()
 }
