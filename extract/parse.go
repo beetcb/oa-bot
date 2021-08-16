@@ -15,7 +15,7 @@ type ParseInfo struct {
 func ParsePdfText(inputPath, text string) ParseInfo {
 	inputPath = filepath.ToSlash(inputPath)
 
-	re := regexp.MustCompile(`([a-z0-9]){30,45}`)
+	re := regexp.MustCompile(`([0-9_]){6,10}`)
 	fileName := re.ReplaceAllString(filepath.Base(inputPath), "")
 	fileName = strings.Replace(fileName, ".pdf", "", 1)
 
